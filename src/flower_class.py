@@ -46,20 +46,21 @@ def fetch_data():
 
     # plotImages(images)
 
+    # Data augmentation on training set
+    for i in range(len(images)):
+        if i%4 == 0:
+            images[i] = tf.image.flip_left_right(images[i])
+        elif i%4 == 1:
+            images[i] = tf.image.adjust_saturation(images[i],2)
+        elif i%4 == 2:
+            images[i] = tf.image.adjust_saturation(images[i],3)
+
+
     train_images, test_images = train_test_split(images, test_size = 0.1, random_state = 42)
     train_labels, test_labels = train_test_split(labels, test_size = 0.1, random_state = 42)
 
     train_images = tf.image.rgb_to_grayscale(train_images)
     test_images = tf.image.rgb_to_grayscale(test_images)
-
-    # Data augmentation on training set
-    # for i in range(len(train_images)):
-    #     if i%4 == 0:
-    #         train_images[i] = tf.image.flip_left_right(train_images[i])
-    #     elif i%4 == 1:
-    #         train_images[i] = tf.image.central_crop(train_images[i], central_fraction = .6)
-    #     elif i%4 == 2:
-    #         train_images[i] = tf.image.adjust_saturation(train_images[i],3)
 
     return np.array(train_images), np.array(test_images), np.array(train_labels), np.array(test_labels)
     #return train_images, test_images, train_labels, test_labels
@@ -75,9 +76,9 @@ def createModel(d = 0):
     model = models.Sequential()
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150,150,1)))
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Conv2D(16, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    #model.add(layers.Conv2D(16, (3, 3), activation='relu'))
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
@@ -88,7 +89,7 @@ def createModel(d = 0):
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-    model.fit(train_images, train_labels, epochs=4)
+    model.fit(train_images, train_labels, epochs=1)
 
     model.evaluate(test_images,  test_labels, verbose=2)
 
