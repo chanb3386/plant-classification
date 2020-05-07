@@ -77,7 +77,7 @@ def createModel(d = 0):
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150,150,1)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(16, (3, 3), activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
+    #model.add(layers.MaxPooling2D((2, 2)))
     #model.add(layers.Conv2D(16, (3, 3), activation='relu'))
 
     model.add(layers.Flatten())
