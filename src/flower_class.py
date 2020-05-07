@@ -33,7 +33,7 @@ def fetch_data():
     # normalizes data to 150x150 pixels
     image_generator = ImageDataGenerator(rescale=1./255,
                                         rotation_range = 90,  # random rotation
-                                        brightness_range=[0.2,1.0]  # random brightness augmentation
+                                        brightness_range=[0.4,0.8]  # random brightness augmentation
                                         )
     data = image_generator.flow_from_directory(batch_size=5481,
                                          directory="../data",
@@ -46,12 +46,20 @@ def fetch_data():
 
     # plotImages(images)
 
-    train_images, test_images = train_test_split(images, test_size = 0.2, random_state = 42)
-    train_labels, test_labels = train_test_split(labels, test_size = 0.2, random_state = 42)
-    #train_images = train_images.dot([0.07, 0.72, 0.21])
-    #test_images = test_images.dot([0.07, 0.72, 0.21])
+    train_images, test_images = train_test_split(images, test_size = 0.1, random_state = 42)
+    train_labels, test_labels = train_test_split(labels, test_size = 0.1, random_state = 42)
+
     train_images = tf.image.rgb_to_grayscale(train_images)
     test_images = tf.image.rgb_to_grayscale(test_images)
+
+    # Data augmentation on training set
+    # for i in range(len(train_images)):
+    #     if i%4 == 0:
+    #         train_images[i] = tf.image.flip_left_right(train_images[i])
+    #     elif i%4 == 1:
+    #         train_images[i] = tf.image.central_crop(train_images[i], central_fraction = .6)
+    #     elif i%4 == 2:
+    #         train_images[i] = tf.image.adjust_saturation(train_images[i],3)
 
     return np.array(train_images), np.array(test_images), np.array(train_labels), np.array(test_labels)
     #return train_images, test_images, train_labels, test_labels
@@ -73,19 +81,17 @@ def createModel(d = 0):
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dense(20))
+    model.add(layers.Dense(20, activation="softmax"))
 
     ############################# plagiarized a wee bit
     model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-    model.fit(train_images, train_labels, epochs=10)
+    model.fit(train_images, train_labels, epochs=4)
 
     model.evaluate(test_images,  test_labels, verbose=2)
 
     # SAVING MODEL
     # Can potentially add capability to save multiple models (if we want)
     model.save("test_model.h5")
-
-createModel()
