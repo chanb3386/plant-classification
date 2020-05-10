@@ -28,5 +28,4 @@ def predictNetwork(model,image):
     species = [name for name in os.listdir("../data") if name!="rys_plant_list.csv"]
     index = predict[0].argmax()
     print(species[index])
-
 # TODO display images
