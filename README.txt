@@ -1,14 +1,6 @@
 May 2020
 Brandon Chan, Samuel Rom
 
-Introduction:
-
 How to Run:
-
-TODO:
-finish model train/test function
-create test/train partition
-finish data augmentation
-test models
-
-add main: prediction, training, logs if needed
+Download gather the code. Libraries needed: TensorFlow/Keras, Matplotlib, Pandas, Numpy, Matplotlib, Scikit-learn, skimage.
+Run the main.py file for all functionality (includes training model and using it in predictions for images in the image folder)
